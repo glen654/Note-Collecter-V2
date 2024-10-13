@@ -10,6 +10,7 @@ import lk.ijse.gdse.aad67.NoteCollector_V2.exception.UserNotFoundException;
 import lk.ijse.gdse.aad67.NoteCollector_V2.service.UserService;
 import lk.ijse.gdse.aad67.NoteCollector_V2.util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,5 +71,13 @@ public class UserServiceImpl implements UserService {
             tmpUser.get().setPassword(userDTO.getPassword());
             tmpUser.get().setProfilePic(userDTO.getProfilePic());
         }
+    }
+
+    @Override
+    public UserDetailsService userDetailsService() {
+
+        return userName ->
+                userDao.findByEmail(userName)
+                        .orElseThrow(()->new UserNotFoundException("User not Found"));
     }
 }
